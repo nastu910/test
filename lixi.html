@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Gieo Quẻ Lì Xì 2026</title>
+    
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&family=Quicksand:wght@400;700&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <style>
+        :root {
+            --primary-red: #c0392b;
+            --gold: #f1c40f;
+            --card-width: 110px;
+            --card-height: 160px;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Quicksand', sans-serif;
+            background-color: #8E0E00;
+            background-image: linear-gradient(to right, #8E0E00, #1F1C18);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .bg-pattern {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: radial-gradient(#f1c40f 1px, transparent 1px);
+            background-size: 30px 30px;
+            opacity: 0.1;
+            pointer-events: none;
+        }
+
+        .game-title {
+            font-family: 'Dancing Script', cursive;
+            color: var(--gold);
+            text-shadow: 2px 2px 0px #5e0a0a;
+            margin-bottom: 20px;
+            text-align: center;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+
+        .game-board {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            border: 1px solid rgba(241, 196, 15, 0.3);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+
+        .lixi-card {
+            width: var(--card-width);
+            height: var(--card-height);
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.6s cubic-bezier(0.4, 0.2, 0.2, 1);
+            cursor: pointer;
+        }
+
+        .lixi-card.flipped {
+            transform: rotateY(180deg);
+            pointer-events: none;
+        }
+
+        .lixi-front {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #b01c20, #800000);
+            border: 2px solid var(--gold);
+            border-radius: 12px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            backface-visibility: hidden;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+            z-index: 2;
+        }
+
+        .lixi-front::after {
+            content: "Phúc";
+            font-family: 'Dancing Script', cursive;
+            font-size: 2.5rem;
+            color: var(--gold);
+        }
+
+        .decor-circle {
+            width: 60px;
+            height: 60px;
+            border: 1px dashed rgba(241, 196, 15, 0.5);
+            border-radius: 50%;
+            position: absolute;
+        }
+
+        .lixi-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background: #fffdf5;
+            border: 2px solid #b01c20;
+            border-radius: 12px;
+            backface-visibility: hidden;
+            transform: rotateY(180deg);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            padding: 5px; /* Giảm padding để có nhiều chỗ cho chữ */
+            color: #b01c20;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+            z-index: 1;
+        }
+
+        .lixi-back .amount {
+            font-size: 1.8rem; /* Mặc định chữ to cho tiền */
+            font-weight: bold;
+            line-height: 1.2;
+            word-break: break-word;
+        }
+
+        /* Class này sẽ được JS thêm vào nếu chữ quá dài */
+        .lixi-back .amount.text-small {
+            font-size: 1rem;
+            font-weight: 600;
+            padding: 0 5px;
+        }
+
+        .btn-reset {
+            margin-top: 30px;
+            background: linear-gradient(to right, #f1c40f, #f39c12);
+            color: #8E0E00;
+            font-weight: bold;
+            padding: 12px 30px;
+            border-radius: 50px;
+            border: none;
+            box-shadow: 0 4px 15px rgba(241, 196, 15, 0.4);
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-reset:hover {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(241, 196, 15, 0.6);
+        }
+
+        .btn-reset:active {
+            transform: scale(0.95);
+        }
+
+        @media (max-width: 640px) {
+            :root {
+                --card-width: 90px;
+                --card-height: 130px;
+            }
+            .game-board {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 12px;
+            }
+            .game-title {
+                font-size: 2.5rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="bg-pattern"></div>
+
+    <h1 class="game-title text-4xl md:text-6xl">Rút Lì Xì 🧧</h1>
+
+    <div class="game-board">
+        <div class="lixi-card" onclick="flipCard(this, 0)">
+            <div class="lixi-front"><div class="decor-circle"></div></div>
+            <div class="lixi-back"><span class="amount">...</span></div>
+        </div>
+        <div class="lixi-card" onclick="flipCard(this, 1)">
+            <div class="lixi-front"><div class="decor-circle"></div></div>
+            <div class="lixi-back"><span class="amount">...</span></div>
+        </div>
+        <div class="lixi-card" onclick="flipCard(this, 2)">
+            <div class="lixi-front"><div class="decor-circle"></div></div>
+            <div class="lixi-back"><span class="amount">...</span></div>
+        </div>
+        <div class="lixi-card" onclick="flipCard(this, 3)">
+            <div class="lixi-front"><div class="decor-circle"></div></div>
+            <div class="lixi-back"><span class="amount">...</span></div>
+        </div>
+        <div class="lixi-card" onclick="flipCard(this, 4)">
+            <div class="lixi-front"><div class="decor-circle"></div></div>
+            <div class="lixi-back"><span class="amount">...</span></div>
+        </div>
+        <div class="lixi-card" onclick="flipCard(this, 5)">
+            <div class="lixi-front"><div class="decor-circle"></div></div>
+            <div class="lixi-back"><span class="amount">...</span></div>
+        </div>
+    </div>
+
+    <button class="btn-reset" onclick="resetGame()">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+        </svg>
+        Xáo Lại Lì Xì
+    </button>
+
+    <script>
+        // Danh sách quà tặng
+        const originalGifts = [
+            { amount: "1k" },
+            { amount: "2k" },
+            { amount: "5k" },
+            { amount: "10k" },
+            { amount: "20k" },
+            { amount: "Chúc bạn may mắn lần sau" }
+        ];
+
+        let currentGifts = [];
+
+        // Hàm xáo trộn
+        function shuffle(array) {
+            let currentIndex = array.length, randomIndex;
+            while (currentIndex != 0) {
+                randomIndex = Math.floor(Math.random() * currentIndex);
+                currentIndex--;
+                [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+            }
+            return array;
+        }
+
+        // Khởi tạo game
+        function initGame() {
+            currentGifts = JSON.parse(JSON.stringify(originalGifts));
+            shuffle(currentGifts);
+
+            const cards = document.querySelectorAll('.lixi-card');
+            cards.forEach((card, index) => {
+                const backFace = card.querySelector('.lixi-back');
+                const amountEl = backFace.querySelector('.amount');
+                
+                // Lưu dữ liệu vào element
+                card.dataset.amount = currentGifts[index].amount;
+                
+                // Reset trạng thái
+                card.classList.remove('flipped');
+                amountEl.classList.remove('text-small'); // Reset cỡ chữ
+            });
+        }
+
+        // Xử lý khi click
+        function flipCard(card, index) {
+            if (card.classList.contains('flipped')) return;
+
+            const backFace = card.querySelector('.lixi-back');
+            const amountEl = backFace.querySelector('.amount');
+            const content = card.dataset.amount;
+            
+            // Cập nhật nội dung
+            amountEl.innerText = content;
+
+            // KIỂM TRA ĐỘ DÀI CHỮ ĐỂ CHỈNH SIZE
+            // Nếu chữ dài hơn 5 ký tự (ví dụ: "Chúc bạn...") thì thêm class text-small
+            if (content.length > 5) {
+                amountEl.classList.add('text-small');
+            } else {
+                amountEl.classList.remove('text-small');
+            }
+
+            // Lật bài
+            card.classList.add('flipped');
+        }
+
+        // Reset game
+        function resetGame() {
+            const cards = document.querySelectorAll('.lixi-card');
+            cards.forEach(card => card.classList.remove('flipped'));
+            setTimeout(() => {
+                initGame();
+            }, 600);
+        }
+
+        window.addEventListener('load', initGame);
+
+    </script>
+</body>
+</html>
